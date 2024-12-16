@@ -26,27 +26,56 @@ router.post("/", async (req, res) => {
       res.status(201).send( comment);
   
     }catch (error){
-      res.status(400).send(error.message)
+      res.status(400).send({
+        message: error.message,
+        error: error
+    })
     }
   
   });
+  //get a single comment
+    //http://localhost:5050/comments/:id
+    router.get("/:id", async (req, res) => {
+      try{
+        console.log("Request ID:", req.params.id);
+        console.log("Update data:", req.body);
+        const  comment = await Comment.findById(
+          req.params.id, 
+        )  ;
+        if(!comment){
+          res.status(404).send({message: "Comment not found" })
+        }else{
+          res.status(200).send(comment)
+        }
+      }catch (error){
+        res.status(400).send({
+          message: error.message,
+          error: error
+      })
+      };
+    
+    });
 
     // Updating  comment
     //http://localhost:5050/comments/:id
   router.patch("/:id", async (req, res) => {
     try{
+     
       const  comment = await Comment.findByIdAndUpdate(
         req.params.id, 
         {$set: req.body },
         {new:true}
       )  ;
       if(!comment){
-        res.status(404).send("Not found")
+        res.status(404).send({message: "Comment not found" })
       }else{
         res.status(200).send(comment)
       }
     }catch (error){
-      res.status(400).send(error)
+      res.status(400).send({
+        message: error.message,
+        error: error
+    })
     };
   
   });
@@ -59,12 +88,15 @@ router.post("/", async (req, res) => {
         req.params.id
       )  ;
       if(! comment){
-        res.status(404).send("Not found")
+        res.status(404).send({message: "Comment not found" })
       }else{
         res.status(200).send( comment)
       }
     }catch (error){
-      res.status(400).send(error)
+      res.status(400).send({
+        message: error.message,
+        error: error
+    })
     };
   
   });
