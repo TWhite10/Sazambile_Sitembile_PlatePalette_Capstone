@@ -5,28 +5,57 @@ import Recipe from "../models/recipes.mjs";
 
 const router = express.Router();
 //get all the recipes
-//http://localhost:5050/comments
+//http://localhost:5050/recipes
 router.get("/", async (req, res) => {
   try {
     const recipes = await Recipe.find({});
-    res.status(200).send(recipes);
+    res.status(200).json(
+      {data:recipes});
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).json( {message: error.message,
+      error: error});
   }
 });
 
-// Create a single recipe 
+//get single recipes
+//http://localhost:5050/recipes
+router.get("/:id", async (req, res) => {
+  try {
+    const recipes = await Recipe.findById(req,params.id);
+    if(!recipe){
+      return res.status(404).json({
+        error:{
+          message:"Recipe not found :("
+        }
+      });
+    }
+    res.status(200).json(
+      {data:recipes});
+  } catch (error) {
+    res.status(400).json( {message: error.message,
+      error: error});
+  }
+});
+
+// Create a single recipe with validation
 //http://localhost:5050/recipes
 router.post("/", async (req, res) => {
-    let newDocument = req.body;
+    const {title,instructions,cookTime} = req.body;
+    if(!title|| !instructions || !cookTime){
+      return res.status(404).json({
+        error:{
+          message:"Please add a title,instructions and cooking time"
+        }
+      });
+    }
 
     try{
-      const recipe = new Recipe(newDocument)
+      const recipe = new Recipe({title,instructions,cookTime})
       await recipe.save();
-      res.status(201).send(recipe);
+      res.status(201).json({data:recipe});
   
     }catch (error){
-      res.status(400).send( {message: error.message,
+      res.status(400).json( {message: error.message,
         error: error})
     }
   
@@ -42,12 +71,17 @@ router.post("/", async (req, res) => {
         {new:true}
       )  ;
       if(!recipe){
-        res.status(404).send("Not found")
-      }else{
-        res.status(200).send(recipe)
+        res.status(404).json({
+          error:{
+            message:"Recipe not found :("
+          }
+        })
       }
+        res.status(200).json({data:recipe})
+      
     }catch (error){
-      res.status(400).send(error)
+      res.status(400).json({message: error.message,
+        error: error})
     };
   
   });
@@ -60,14 +94,19 @@ router.post("/", async (req, res) => {
         req.params.id
       )  ;
       if(!result){
-        res.status(404).send("Not found")
-      }else{
-        res.status(200).send(result)
+        return res.status(404).send({error:{
+          message:"Recipe not found :("
+        }})
       }
+        res.status(200).json({message:"Recipe successfully deleted",
+          data: recipe})
+      
     }catch (error){
-      res.status(400).send(error)
+      res.status(400).json({message: error.message,
+        error: error})
     };
   
   });
+  
   
 export default router;

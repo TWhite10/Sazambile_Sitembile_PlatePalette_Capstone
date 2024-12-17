@@ -14,12 +14,20 @@ const usersSchema = new mongoose.Schema({
         required: true,
         isLowercase:true,
         unique:true,
-        validate: [ validator.isEmail, 'invalid email' ]
+        validate: [ validator.isEmail, "Invalid email" ]
+      },
+      password: {
+        type:String,
+        required:true
       }
+      //name
+      //bio
+      
 })
 
-usersSchema.index({ username: 1 });
+usersSchema.index({ username: 1 },{unique:true});
 usersSchema.index({ email: 1 });
+
 
 
 export default mongoose.model("User", usersSchema);

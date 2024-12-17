@@ -1,7 +1,8 @@
 export const userData = [
     {
         username:"user1", 
-        email:"email1@example.com"
+        email:"email1@example.com",
+        //password:"Password12345*"
     },
     {
         username:"user2", 
