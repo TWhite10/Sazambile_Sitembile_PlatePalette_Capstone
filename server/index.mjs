@@ -6,6 +6,7 @@ import { userData, recipeData, commentData } from "./src/utilities/data.mjs";
 import users from "./src/routes/users.mjs";
 import comments from "./src/routes/comments.mjs";
 import recipes from "./src/routes/recipes.mjs";
+import auth from "./src/routes/auth.mjs"
 import {createError} from "./src/utilities/error.mjs";
 import dotenv from "dotenv";
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/users", users);
 app.use("/comments", comments);
 app.use("/recipes", recipes);
+app.use("/auth",auth)
 
 // Global error handling
 app.use((err, _req, res, next) => {
