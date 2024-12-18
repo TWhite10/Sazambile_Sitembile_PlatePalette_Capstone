@@ -2,7 +2,6 @@ import express from "express";
 import User from "../models/users.mjs";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-//import {createError} from "./src/utilities/error.mjs";
 
 const router = express.Router();
 
@@ -10,7 +9,7 @@ const generateJwtTokens = (userId) => {
     const accessToken = jwt.sign(
       { userId },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '10m' }
+      { expiresIn: '15m' }
     );
   
     const refreshToken = jwt.sign(
@@ -124,13 +123,44 @@ export const login = async (req, res) => {
 // Refresh token
 //http://localhost:5050/auth/refresh
 export const refresh = async (req, res) => {
-   
+    const { refreshToken } = req.body;
+  
+    if (!refreshToken) {
+      return res.status(401).json({
+        error: {
+          message: "Refresh token is required"
+        }
+      });
+    }
+  
+    try {
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+      const accessToken = jwt.sign(
+        { userId: decoded.userId },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '15m' }
+      );
+  
+      res.status(200).json({
+        data: { accessToken }
+      });
+    } catch (error) {
+      res.status(401).json({
+        error: {
+          message: "Invalid refresh token :("
+        }
+      });
+    }
   };
   
 // Logout user
 //http://localhost:5050/auth/logout
 export const logout = async (req, res) => {
-   
+    res.status(200).json({
+      data: {
+        message: "Successfully logged out :)"
+      }
+    });
   };
 
 export default router;
