@@ -1,18 +1,13 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/users.mjs";
-import authController from "../controllers/authController.mjs"
+import {register,login,refresh,logout} from "../controllers/authController.mjs"
 const router = express.Router();
 
 
-// router.route("/")
-//     .post(authController.login)
-
-// router.route("/refresh")
-//     get(authController.refresh)
-
-// router.route("/logout")
-//     .post(authController.logout)
-
+router.post("/register", register);
+router.post("/login", login);
+router.post("/refresh", refresh);
+router.post("/logout", logout);
 
 export default router;
