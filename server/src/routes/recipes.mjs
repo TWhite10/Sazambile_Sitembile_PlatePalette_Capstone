@@ -1,6 +1,7 @@
 import express from "express";
 import Recipe from "../models/recipes.mjs";
 import User from "../models/users.mjs";
+import {requireJwtAuth} from "../middleware/auth.mjs"
 
 
 const router = express.Router();
@@ -51,7 +52,7 @@ router.get("/:id", async (req, res) => {
 
 // Create a single recipe with validation
 //http://localhost:5050/recipes
-router.post("/", async (req, res) => {
+router.post("/",requireJwtAuth, async (req, res) => {
   const { title, instructions, cookTime, user } = req.body;
 
   if (!title || !instructions || !cookTime || !user) {
@@ -98,7 +99,7 @@ router.post("/", async (req, res) => {
 
 // Updating recipe
 //http://localhost:5050/recipes/:id
-router.patch("/:id", async (req, res) => {
+router.patch("/:id",requireJwtAuth, async (req, res) => {
 
   const { title, instructions, cookTime } = req.body;
 
@@ -135,7 +136,7 @@ router.patch("/:id", async (req, res) => {
 
 //Delete a single recipe
 //http://localhost:5050/recipes/:id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireJwtAuth, async (req, res) => {
   try {
     const result = await Recipe.findByIdAndDelete(
       req.params.id
