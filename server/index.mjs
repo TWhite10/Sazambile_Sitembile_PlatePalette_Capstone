@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-
+import cors from "cors";
 import { userData, recipeData, commentData } from "./src/utilities/data.mjs";
 
 import users from "./src/routes/users.mjs";
@@ -18,7 +18,7 @@ mongoose.connect(process.env.ATLAS_URI);
 const app = express();
 //Middleware
 app.use(express.json());
-
+app.use(cors());
 
 app.use("/users", users);
 app.use("/comments", comments);
